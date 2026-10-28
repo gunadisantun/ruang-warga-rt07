@@ -31,6 +31,8 @@ const commit=(next,action,object)=>{next.audit.unshift({id:uid('AUD'),actor:role
 const open=(type,item={})=>{if(type==='request'||type==='detail'&&item.collection==='requests'){setModal(null);nav('letters');setLetterLaunch({id:item.item?.id,nonce:Date.now()});return;}setFilePreview(null);setModal({type,...item});};
 const mutate=(fn,action,obj)=>{const next=structuredClone(data);fn(next);commit(next,action,obj);};
 const visibleNav=links.filter(([id])=>id!=='houses'&&id!=='settings'||id==='houses'&&['Ketua RT','Sekretaris','Bendahara'].includes(role)||id==='settings'&&can(role,'audit'));
+const primaryNav=visibleNav.filter(([id])=>['home','letters','invoices'].includes(id));
+const demoNav=visibleNav.filter(([id])=>!['home','letters','invoices'].includes(id));
 const displayStatus=i=>i.status==='Belum dibayar'&&i.due<DEMO_DATE?'Terlambat':i.status;
 const matches=x=>JSON.stringify(x).toLowerCase().includes(search.toLowerCase());
 const historyItem=(status,note)=>({status,note,actor:role,at:new Date().toLocaleString('id-ID',{timeZone:'Asia/Jakarta'})});

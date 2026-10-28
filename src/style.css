@@ -8,3 +8,4 @@
 @media(max-width:400px){.hero h2{font-size:21px}.stat>strong{font-size:19px}.page-heading h1{font-size:23px}.hero-copy{width:100%}.hero p{max-width:205px}}
 @media(max-width:760px){.sidebar:not(.is-open){visibility:hidden}.sidebar.is-open{visibility:visible}.privacy-card h3{white-space:normal}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+.nav-label{letter-spacing:1.4px}.secondary-nav button small{margin-left:auto;color:#9aa995;font-size:9px}.secondary-nav{opacity:.86}.secondary-nav button{min-height:38px}
