@@ -21,11 +21,11 @@ function Neighborhood(){return <svg className="neighborhood" viewBox="0 0 420 22
 function App(){
 const [session,setSession]=useState(null),[authMode,setAuthMode]=useState('login'),[authBusy,setAuthBusy]=useState(false),[authError,setAuthError]=useState('');
 useEffect(()=>{if(!supabase)return;supabase.auth.getSession().then(({data})=>setSession(data.session));const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,next)=>setSession(next));return()=>subscription.unsubscribe()},[]);
-if(hasSupabase&&!session)return <AuthScreen mode={authMode} setMode={setAuthMode} busy={authBusy} setBusy={setAuthBusy} error={authError} setError={setAuthError}/>;
 const [data,setData]=useState(()=>{if(hasSupabase)return emptyProductionState();try{const saved=JSON.parse(localStorage.getItem(KEY));return saved?.version===1?saved:seed();}catch{return seed();}});
 const [role,setRole]=useState('Warga'),[page,setPage]=useState('home'),[modal,setModal]=useState(null),[toast,setToast]=useState(''),[mobile,setMobile]=useState(false),[period,setPeriod]=useState('2026-10'),[search,setSearch]=useState(''),[filter,setFilter]=useState('Semua'),[tab,setTab]=useState('Pengumuman'),[notice,setNotice]=useState(false),[storageError,setStorageError]=useState(false),[filePreview,setFilePreview]=useState(null),[install,setInstall]=useState(null);
 const [letterLaunch,setLetterLaunch]=useState(null);
 const closeRef=useRef(null),priorFocus=useRef(null);
+if(hasSupabase&&!session)return <AuthScreen mode={authMode} setMode={setAuthMode} busy={authBusy} setBusy={setAuthBusy} error={authError} setError={setAuthError}/>;
 useEffect(()=>{if(hasSupabase){localStorage.removeItem(KEY);return;}try{localStorage.setItem(KEY,JSON.stringify(data));setStorageError(false);}catch{setStorageError(true);}},[data]);
 useEffect(()=>{const listener=e=>{e.preventDefault();setInstall(e);};window.addEventListener('beforeinstallprompt',listener);if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});return()=>window.removeEventListener('beforeinstallprompt',listener)},[]);
 useEffect(()=>{if(toast){const t=setTimeout(()=>setToast(''),4500);return()=>clearTimeout(t)}},[toast]);
