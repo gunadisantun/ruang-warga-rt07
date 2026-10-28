@@ -9,14 +9,19 @@ export const supabase = url && key ? createClient(url, key, {
 
 export const hasSupabase = Boolean(supabase);
 
+export function authIdentifier(value) {
+  const input = String(value || '').trim().toLowerCase();
+  return input.includes('@') ? input : `${input}@ruangwarga.local`;
+}
+
 export async function signInWithPassword(email, password) {
   if (!supabase) throw new Error('Supabase belum dikonfigurasi. Demo lokal tetap dapat digunakan.');
-  return supabase.auth.signInWithPassword({ email, password });
+  return supabase.auth.signInWithPassword({ email: authIdentifier(email), password });
 }
 
 export async function signUpWithPassword(email, password, fullName = '') {
   if (!supabase) throw new Error('Supabase belum dikonfigurasi.');
-  return supabase.auth.signUp({ email, password, options: { data: { full_name: fullName } } });
+  return supabase.auth.signUp({ email: authIdentifier(email), password, options: { data: { full_name: fullName, username: String(email || '').trim().toLowerCase() } } });
 }
 
 export async function signOut() {
