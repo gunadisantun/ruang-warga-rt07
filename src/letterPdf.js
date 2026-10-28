@@ -1,0 +1,19 @@
+import{commonFields,serviceFor,localDate}from'./letters.js';
+// Generate the same immutable document after approval; do not synthesize signatures.
+export async function buildLetterPdf(item,{preview=false}={}){
+const{jsPDF}=await import('jspdf');const doc=new jsPDF({unit:'mm',format:'a4'});const issue=item.issued,s=issue.settings,form=issue.form,service=serviceFor(issue.type);let y=21;const left=23,width=164,bottom=268;
+doc.setFont('times','normal');doc.setTextColor(25);doc.setFontSize(11);
+function addPageIf(height){if(y+height>bottom){doc.addPage();y=25;}}
+function paragraph(text,{bold=false,center=false,size=11,gap=5}={}){doc.setFont('times',bold?'bold':'normal');doc.setFontSize(size);const lines=doc.splitTextToSize(String(text),width);for(const line of lines){addPageIf(6);doc.text(line,center?105:left,y,center?{align:'center'}:{});y+=5.2;}y+=gap;}
+paragraph('RUKUN TETANGGA 07 / RUKUN WARGA 09',{center:true,bold:true,size:14,gap:0});paragraph('PRIMA HARAPAN REGENCY',{center:true,bold:true,size:13,gap:1});paragraph(`Kelurahan ${s.village} - Kecamatan ${s.district}`,{center:true,size:10,gap:0});paragraph(`${s.city}${s.postalCode?' '+s.postalCode:''}`,{center:true,size:10,gap:0});paragraph(s.officeAddress,{center:true,size:10,gap:0});if(s.contact)paragraph('Kontak sekretariat: '+s.contact,{center:true,size:9,gap:0});doc.setLineWidth(.6);doc.line(left,y,187,y);y+=1;doc.setLineWidth(.2);doc.line(left,y,187,y);y+=10;
+paragraph(issue.type.toUpperCase(),{center:true,bold:true,size:12,gap:0});paragraph('Nomor: '+(preview?'PRATINJAU - BELUM DITERBITKAN':issue.number),{center:true,size:11,gap:8});paragraph(service.intro,{gap:5});
+function row(label,value){if(!value)return;doc.setFontSize(11);doc.setFont('times','normal');const names=doc.splitTextToSize(label,49),values=doc.splitTextToSize(String(value),107);const height=Math.max(names.length,values.length)*5.2+1;addPageIf(height);doc.text(names,left,y);doc.text(':',76,y);doc.text(values,80,y);y+=height;}
+for(const f of commonFields.filter(f=>!['purpose','destination','phone'].includes(f.key))){let v=form[f.key];if(f.type==='date'&&v)v=localDate(v);row(f.label.replace(' — hanya jika diminta instansi tujuan',''),v);}y+=3;
+if(service.fields.length){paragraph('Keterangan keperluan',{bold:true,gap:2});for(const f of service.fields){let v=form[f.key];if(f.type==='date'&&v)v=localDate(v);if(f.key==='income')v='Rp '+Number(v).toLocaleString('id-ID');row(f.label,v);}y+=4;}
+row('Ditujukan kepada',form.destination);paragraph('Keperluan: '+form.purpose,{gap:5});paragraph('Demikian surat ini dibuat untuk digunakan sebagaimana mestinya sesuai keperluan yang disebutkan di atas.',{gap:6});
+addPageIf(42);doc.setFontSize(11);doc.setFont('times','normal');const signDate=doc.splitTextToSize(s.city+', '+localDate(issue.date),59);doc.text(signDate,128,y);y+=signDate.length*5.2+2;doc.text('Ketua RT 07 / RW 09',128,y);y+=20;doc.setFont('times','bold');const name=doc.splitTextToSize(s.chairman,59);doc.text(name,128,y);y+=name.length*5.8+7;
+const pages=doc.getNumberOfPages();for(let p=1;p<=pages;p++){doc.setPage(p);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(100);doc.text(preview?'PRATINJAU - BELUM DISETUJUI':'Dokumen perlu tanda tangan dan stempel RT. Persetujuan aplikasi bukan tanda tangan elektronik.',23,280);doc.text('Referensi: '+item.id+' | Halaman '+p+' dari '+pages,23,286);}
+return doc.output('datauristring');}
+export function downloadLetter(item){if(!item.pdfData)throw Error('PDF belum tersedia.');const bytes=Uint8Array.from(atob(item.pdfData.split(',')[1]),c=>c.charCodeAt(0));const url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));const a=document.createElement('a');a.href=url;a.download=(item.number||item.id).replaceAll('/','-')+'.pdf';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);}
+
+

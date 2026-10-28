@@ -1,5 +1,15 @@
 # Ruang Warga — RT 07 / RW 09
 
+## Pembaruan persuratan 28 Oktober 2026
+
+Modul baru `Letters.jsx`, `letters.js`, dan `letterPdf.js` menggantikan formulir surat ringkas. Delapan layanan memiliki validasi identitas, tujuan, dan kolom khusus layanan. Ketua RT/Sekretaris dapat mengisi kop, wilayah, alamat sekretariat, nama Ketua RT, pola nomor dan urutan berikutnya melalui **Layanan Administrasi → Pengaturan surat**.
+
+Pemohon menerima notifikasi Dalam proses saat mengajukan. Sekretaris memeriksa dan meneruskan; Ketua RT dapat memeriksa langsung atau menerima hasil pemeriksaan. Ketua RT menyetujui dengan konfirmasi eksplisit. PDF harus berhasil dibuat sebelum status Selesai disimpan. Nomor ganda dan penerbitan ulang dicegah dalam alur aplikasi. Pemohon membuka notifikasi untuk mengunduh PDF. Versi PDF dan kop saat penerbitan disimpan bersama surat, sehingga perubahan pengaturan tidak mengubah surat lama.
+
+Permintaan perbaikan dapat diedit dan diajukan ulang. Permohonan lama tanpa formulir lengkap harus dilengkapi pemohon terlebih dahulu. PDF menyediakan ruang tanda tangan dan stempel fisik; persetujuan aplikasi bukan tanda tangan elektronik. Format dan persyaratan belum disahkan instansi setempat. NIK opsional dan tidak boleh menggunakan data asli selama backend privat belum tersedia.
+
+Seluruh alur tetap lokal, tanpa pengiriman email/WhatsApp atau sinkronisasi antarperangkat. Pengujian domain kini mencakup 16 kasus. Petunjuk alur lama di bawah menjadi riwayat versi awal; untuk surat gunakan alur pembaruan ini.
+
 Demo interaktif berdasarkan PRD Aplikasi RT07 RW09 Prima Harapan Regency versi 1.0, 27 Oktober 2026.
 
 ## Status
